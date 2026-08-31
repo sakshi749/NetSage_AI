@@ -1,0 +1,99 @@
+import json
+import csv
+from pathlib import Path
+
+BASE = Path(__file__).resolve().parent.parent
+AI_FILE = BASE / "data" / "ai_results.json"
+OUT_FILE = BASE / "data" / "reviewed_cases.csv"
+
+
+def load_results():
+    with AI_FILE.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def main():
+    results = load_results()
+    reviewed = []
+
+    print("=" * 65)
+    print("NetSage AI - Human Review Gate")
+    print("=" * 65)
+    print("AI proposes. Human reviewer decides.\n")
+
+    for r in results:
+        print("\n" + "-" * 65)
+        print("Case:", r["case_id"])
+        print("Diagnosis:", r["primary_hypothesis"])
+        print("Confidence:", r["confidence"])
+        print("Evidence:")
+        for evidence in r["evidence"]:
+            print(" -", evidence["observation"])
+
+        while True:
+            choice = input(
+                "\nReview [A]ccept / [E]dit / [R]eject: "
+            ).strip().upper()
+
+            if choice in {"A", "E", "R"}:
+                break
+
+            print("Please enter A, E, or R.")
+
+        status = {
+            "A": "Accepted",
+            "E": "Edited",
+            "R": "Rejected"
+        }[choice]
+
+        correction = ""
+        reason = ""
+
+        if choice in {"E", "R"}:
+            correction = input(
+                "Enter corrected diagnosis: "
+            ).strip()
+
+            reason = input(
+                "Why was the AI diagnosis corrected? "
+            ).strip()
+
+        reviewed.append({
+            "case_id": r["case_id"],
+            "ai_diagnosis": r["primary_hypothesis"],
+            "ai_confidence": r["confidence"],
+            "human_status": status,
+            "human_correction": correction,
+            "reviewer_reason": reason,
+            "requires_human_approval": True
+        })
+
+    with OUT_FILE.open(
+        "w",
+        newline="",
+        encoding="utf-8"
+    ) as f:
+
+        fields = [
+            "case_id",
+            "ai_diagnosis",
+            "ai_confidence",
+            "human_status",
+            "human_correction",
+            "reviewer_reason",
+            "requires_human_approval"
+        ]
+
+        writer = csv.DictWriter(f, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(reviewed)
+
+    print("\n" + "=" * 65)
+    print("Human review completed.")
+    print("Reviewed cases:", len(reviewed))
+    print("Saved to:", OUT_FILE)
+    print("=" * 65)
+
+
+if __name__ == "__main__":
+    main()

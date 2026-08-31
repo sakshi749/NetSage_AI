@@ -1,0 +1,857 @@
+[
+  {
+    "case_id": "NS-001",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "PC-ADMIN switch port assigned to wrong VLAN.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 2",
+    "concept": "VLAN",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "show vlan brief: Fa0/1 listed under VLAN 20",
+        "supports": "PC-ADMIN switch port assigned to wrong VLAN."
+      },
+      {
+        "observation": "PC-ADMIN cannot reach its gateway.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show interfaces fa0/1 switchport",
+    "fix_steps": [
+      "Assign Fa0/1 to access VLAN 10.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.10.1",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-002",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Required VLAN 30 is missing.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 2",
+    "concept": "VLAN",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "show vlan brief: VLAN 30 absent",
+        "supports": "Required VLAN 30 is missing."
+      },
+      {
+        "observation": "Hosts assigned to VLAN 30 cannot communicate.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show vlan brief",
+    "fix_steps": [
+      "Create VLAN 30 and assign required ports.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "show vlan brief",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-003",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "VLAN 20 is not allowed on the trunk.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 2",
+    "concept": "Trunk",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "show interfaces trunk: allowed VLANs 10,30",
+        "supports": "VLAN 20 is not allowed on the trunk."
+      },
+      {
+        "observation": "VLAN 20 cannot reach other VLANs.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show interfaces trunk",
+    "fix_steps": [
+      "Allow VLAN 20 on Gi0/1 trunk.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.20.1",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-004",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Router-facing switch port is not operating as a trunk.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 2",
+    "concept": "Trunk",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "show interfaces trunk: no active trunk ports",
+        "supports": "Router-facing switch port is not operating as a trunk."
+      },
+      {
+        "observation": "Inter-VLAN communication fails for all users.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show interfaces gi0/1 switchport",
+    "fix_steps": [
+      "Configure Gi0/1 as an 802.1Q trunk.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "show interfaces trunk",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-005",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Incorrect subnet mask on PC-ADMIN.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3",
+    "concept": "IP",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "ipconfig: IP 192.168.10.10 mask 255.255.0.0",
+        "supports": "Incorrect subnet mask on PC-ADMIN."
+      },
+      {
+        "observation": "PC-ADMIN cannot reach its gateway.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "ipconfig",
+    "fix_steps": [
+      "Set subnet mask to 255.255.255.0.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.10.1",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-006",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Incorrect default gateway on PC-STAFF.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3",
+    "concept": "Gateway",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "ipconfig: default gateway 192.168.10.1",
+        "supports": "Incorrect default gateway on PC-STAFF."
+      },
+      {
+        "observation": "PC-STAFF can communicate locally but not with other VLANs.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "ipconfig",
+    "fix_steps": [
+      "Set gateway to 192.168.20.1.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.30.10",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-007",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Duplicate IPv4 address.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3",
+    "concept": "IP",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "PC-A: 192.168.10.10; PC-B: 192.168.10.10",
+        "supports": "Duplicate IPv4 address."
+      },
+      {
+        "observation": "Two hosts experience intermittent connectivity.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "arp -a",
+    "fix_steps": [
+      "Assign a unique IP address to one host.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.10.1",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-008",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Host has an IP address from the wrong subnet.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3",
+    "concept": "IP",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "ipconfig: 192.168.30.20/24",
+        "supports": "Host has an IP address from the wrong subnet."
+      },
+      {
+        "observation": "PC-STAFF cannot reach any VLAN 20 device.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "ipconfig",
+    "fix_steps": [
+      "Configure an address from 192.168.20.0/24.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.20.1",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-009",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "DHCP service is unavailable or unreachable.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 7",
+    "concept": "DHCP",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "ipconfig: 169.254.x.x address assigned",
+        "supports": "DHCP service is unavailable or unreachable."
+      },
+      {
+        "observation": "New clients fail to obtain addresses automatically.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show ip dhcp binding",
+    "fix_steps": [
+      "Enable/restore DHCP service and verify pool configuration.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ipconfig /renew",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-010",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "DHCP pool network does not match VLAN 20.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3",
+    "concept": "DHCP",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "DHCP pool network: 192.168.10.0/24",
+        "supports": "DHCP pool network does not match VLAN 20."
+      },
+      {
+        "observation": "VLAN 20 clients receive addresses from the wrong subnet.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show running-config | section dhcp",
+    "fix_steps": [
+      "Correct the DHCP pool network for VLAN 20.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ipconfig /renew",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-011",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "DHCP relay/helper address is missing.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3",
+    "concept": "DHCP",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "show run interface: no ip helper-address configured",
+        "supports": "DHCP relay/helper address is missing."
+      },
+      {
+        "observation": "Remote VLAN clients cannot obtain DHCP leases.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show running-config interface",
+    "fix_steps": [
+      "Configure the correct ip helper-address.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ipconfig /renew",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-012",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Incorrect default-router option in DHCP pool.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3",
+    "concept": "DHCP",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "DHCP pool default-router: 192.168.10.254",
+        "supports": "Incorrect default-router option in DHCP pool."
+      },
+      {
+        "observation": "DHCP clients receive addresses but cannot leave their subnet.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show running-config | section dhcp",
+    "fix_steps": [
+      "Set the pool default-router to the correct gateway.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.30.10",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-013",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "DNS A record is missing.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 7",
+    "concept": "DNS",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "nslookup: server can't find www.netsage.local",
+        "supports": "DNS A record is missing."
+      },
+      {
+        "observation": "Users can ping the web server IP but cannot open www.netsage.local.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "nslookup www.netsage.local",
+    "fix_steps": [
+      "Create the correct A record pointing to 192.168.30.10.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "nslookup www.netsage.local",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-014",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "DNS A record contains an incorrect address.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 7",
+    "concept": "DNS",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "nslookup: www.netsage.local -> 192.168.30.99",
+        "supports": "DNS A record contains an incorrect address."
+      },
+      {
+        "observation": "Users can reach server by IP but hostname resolves incorrectly.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "nslookup www.netsage.local",
+    "fix_steps": [
+      "Correct the A record to 192.168.30.10.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping www.netsage.local",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-015",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Route to VLAN 30 network is missing.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3",
+    "concept": "Routing",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "show ip route: no route for 192.168.30.0/24",
+        "supports": "Route to VLAN 30 network is missing."
+      },
+      {
+        "observation": "VLAN 30 is unreachable from other networks.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show ip route",
+    "fix_steps": [
+      "Restore the connected/static route to 192.168.30.0/24.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.30.10",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-016",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Router subinterface is down.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3",
+    "concept": "Routing",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "show ip interface brief: Gi0/0.10 administratively down",
+        "supports": "Router subinterface is down."
+      },
+      {
+        "observation": "VLAN 10 cannot route through R1.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show ip interface brief",
+    "fix_steps": [
+      "Enable/correct the VLAN 10 subinterface.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.10.1",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-017",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Incorrect 802.1Q VLAN encapsulation on subinterface.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 2/3",
+    "concept": "Routing",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "show run: Gi0/0.20 encapsulation dot1Q 30",
+        "supports": "Incorrect 802.1Q VLAN encapsulation on subinterface."
+      },
+      {
+        "observation": "VLAN 20 traffic reaches R1 but routing fails.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show running-config interface gi0/0.20",
+    "fix_steps": [
+      "Configure encapsulation dot1Q 20.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.20.1",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-018",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Default route is missing.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3",
+    "concept": "Routing",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "show ip route: Gateway of last resort is not set",
+        "supports": "Default route is missing."
+      },
+      {
+        "observation": "Remote network traffic is dropped at the edge router.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show ip route",
+    "fix_steps": [
+      "Configure the correct default route toward the ISP.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "traceroute 8.8.8.8",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-019",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "ACL incorrectly denies ADMIN traffic.",
+    "alternative_hypotheses": [
+      "Incorrect ACL entry",
+      "Incorrect ACL direction",
+      "ACL applied to wrong interface"
+    ],
+    "osi_layer": "Layer 3/4",
+    "concept": "ACL",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "show access-lists: deny ip 192.168.10.0 0.0.0.255 any",
+        "supports": "ACL incorrectly denies ADMIN traffic."
+      },
+      {
+        "observation": "ADMIN users unexpectedly cannot access the web server.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show access-lists",
+    "fix_steps": [
+      "Correct the ACL permit/deny policy after human review.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.30.10",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-020",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Guest isolation ACL rule is missing.",
+    "alternative_hypotheses": [
+      "Incorrect ACL entry",
+      "Incorrect ACL direction",
+      "ACL applied to wrong interface"
+    ],
+    "osi_layer": "Layer 3/4",
+    "concept": "ACL",
+    "confidence": 0.82,
+    "evidence": [
+      {
+        "observation": "show access-lists: no deny rule for guest-to-server traffic",
+        "supports": "Guest isolation ACL rule is missing."
+      },
+      {
+        "observation": "Guest users can reach a protected internal server.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show access-lists",
+    "fix_steps": [
+      "Add reviewed ACL policy denying unauthorized guest access.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping 192.168.30.10",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-021",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "ACL is applied in the wrong direction.",
+    "alternative_hypotheses": [
+      "Incorrect ACL entry",
+      "Incorrect ACL direction",
+      "ACL applied to wrong interface"
+    ],
+    "osi_layer": "Layer 3/4",
+    "concept": "ACL",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "show run interface: ACL applied in incorrect direction",
+        "supports": "ACL is applied in the wrong direction."
+      },
+      {
+        "observation": "An ACL exists but prohibited traffic still passes.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show running-config interface",
+    "fix_steps": [
+      "Apply the ACL in the intended direction after review.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "show ip interface",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-022",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "NAT configuration is missing or not matching traffic.",
+    "alternative_hypotheses": [
+      "NAT interface-role problem",
+      "NAT ACL mismatch",
+      "Missing or incorrect NAT rule"
+    ],
+    "osi_layer": "Layer 3",
+    "concept": "NAT",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "show ip nat translations: empty during generated traffic",
+        "supports": "NAT configuration is missing or not matching traffic."
+      },
+      {
+        "observation": "Internal users cannot reach an external network.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show ip nat statistics",
+    "fix_steps": [
+      "Verify NAT rule, matching ACL, and overload configuration.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "show ip nat translations",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-023",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "NAT inside designation is missing.",
+    "alternative_hypotheses": [
+      "NAT interface-role problem",
+      "NAT ACL mismatch",
+      "Missing or incorrect NAT rule"
+    ],
+    "osi_layer": "Layer 3",
+    "concept": "NAT",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "show run interface gi0/0: ip nat inside absent",
+        "supports": "NAT inside designation is missing."
+      },
+      {
+        "observation": "NAT translations are never created.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show ip nat statistics",
+    "fix_steps": [
+      "Configure the correct interface as ip nat inside.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "show ip nat translations",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-024",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "NAT ACL does not match the affected subnet.",
+    "alternative_hypotheses": [
+      "NAT interface-role problem",
+      "NAT ACL mismatch",
+      "Missing or incorrect NAT rule"
+    ],
+    "osi_layer": "Layer 3",
+    "concept": "NAT",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "show access-lists: NAT ACL matches only 192.168.10.0/24",
+        "supports": "NAT ACL does not match the affected subnet."
+      },
+      {
+        "observation": "Some internal subnets cannot use NAT.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show access-lists",
+    "fix_steps": [
+      "Correct the NAT match ACL after human review.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "show ip nat translations",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-025",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Wireless client is configured with the wrong SSID.",
+    "alternative_hypotheses": [
+      "SSID/security mismatch",
+      "Incorrect WLAN-to-VLAN mapping",
+      "Wireless addressing problem"
+    ],
+    "osi_layer": "Layer 2",
+    "concept": "Wireless",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "Client SSID: NetSage; AP SSID: NetSage-Guest",
+        "supports": "Wireless client is configured with the wrong SSID."
+      },
+      {
+        "observation": "Wireless laptop cannot join the network.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "inspect wireless client configuration",
+    "fix_steps": [
+      "Configure the client with the correct SSID.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping default gateway",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-026",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Wireless security key mismatch.",
+    "alternative_hypotheses": [
+      "SSID/security mismatch",
+      "Incorrect WLAN-to-VLAN mapping",
+      "Wireless addressing problem"
+    ],
+    "osi_layer": "Layer 2",
+    "concept": "Wireless",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "AP WPA2 key differs from client key",
+        "supports": "Wireless security key mismatch."
+      },
+      {
+        "observation": "Client sees the SSID but cannot authenticate.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "inspect AP security settings",
+    "fix_steps": [
+      "Configure matching authorized WPA2 credentials.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "associate to SSID",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-027",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Incorrect WLAN-to-VLAN mapping.",
+    "alternative_hypotheses": [
+      "SSID/security mismatch",
+      "Incorrect WLAN-to-VLAN mapping",
+      "Wireless addressing problem"
+    ],
+    "osi_layer": "Layer 2",
+    "concept": "Wireless",
+    "confidence": 0.84,
+    "evidence": [
+      {
+        "observation": "AP VLAN mapping: VLAN 20 instead of guest VLAN 40",
+        "supports": "Incorrect WLAN-to-VLAN mapping."
+      },
+      {
+        "observation": "Guest Wi-Fi clients join successfully but receive no network access.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "inspect AP VLAN mapping",
+    "fix_steps": [
+      "Map guest WLAN to the correct guest VLAN.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "ping guest gateway",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-028",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Server-facing interface is down.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 1",
+    "concept": "Interface",
+    "confidence": 0.92,
+    "evidence": [
+      {
+        "observation": "show interfaces fa0/3: line protocol down",
+        "supports": "Server-facing interface is down."
+      },
+      {
+        "observation": "Entire server VLAN becomes unreachable.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show interfaces status",
+    "fix_steps": [
+      "Restore the physical/interface state and verify cabling.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "show interfaces fa0/3",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-029",
+    "diagnosis_status": "NEED_MORE_EVIDENCE",
+    "primary_hypothesis": "Available evidence does not uniquely identify the network root cause.",
+    "alternative_hypotheses": [
+      "Inter-VLAN routing failure",
+      "Trunk VLAN forwarding problem",
+      "ACL filtering traffic"
+    ],
+    "osi_layer": "Layer 2/3/4",
+    "concept": "Evidence",
+    "confidence": 0.45,
+    "evidence": [
+      {
+        "observation": "show vlan brief: VLAN 10 and VLAN 30 active",
+        "supports": "Available evidence does not uniquely identify the network root cause."
+      },
+      {
+        "observation": "PC in VLAN 10 can ping its gateway but cannot reach VLAN 30 server.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [
+      "Layer-3 routing evidence",
+      "Trunk forwarding evidence",
+      "ACL filtering evidence"
+    ],
+    "next_command": "show ip route",
+    "fix_steps": [
+      "Do not modify the configuration yet.",
+      "Collect the recommended diagnostic evidence.",
+      "Re-evaluate competing hypotheses after evidence collection."
+    ],
+    "verification_command": "show interfaces trunk",
+    "requires_human_approval": true
+  },
+  {
+    "case_id": "NS-030",
+    "diagnosis_status": "DIAGNOSED",
+    "primary_hypothesis": "Potential guest isolation/security policy failure.",
+    "alternative_hypotheses": [],
+    "osi_layer": "Layer 3/4",
+    "concept": "Security",
+    "confidence": 0.82,
+    "evidence": [
+      {
+        "observation": "ping 192.168.30.10 succeeds from guest client",
+        "supports": "Potential guest isolation/security policy failure."
+      },
+      {
+        "observation": "Guest network can access the internal DNS/web server.",
+        "supports": "Observed network failure"
+      }
+    ],
+    "missing_evidence": [],
+    "next_command": "show access-lists",
+    "fix_steps": [
+      "Inspect VLAN mapping and ACL policy; remediation requires human approval.",
+      "Require human review before applying the proposed remediation."
+    ],
+    "verification_command": "test guest-to-server connectivity",
+    "requires_human_approval": true
+  }
+]
